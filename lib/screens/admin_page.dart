@@ -29,6 +29,7 @@ class _AdminPageState extends State<AdminPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
                 ),
                 child: Text(
                   "Espace Admin",
@@ -79,6 +80,7 @@ class _AdminPageState extends State<AdminPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: green,
+                  foregroundColor: Colors.white,
                 ),
                 child: Text(
                   "Espace Utilisateur",

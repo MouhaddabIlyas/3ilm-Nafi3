@@ -398,8 +398,8 @@ class _UploadPageState extends State<UploadPage> {
                           }
                           
                           print('Thumbnail Path: ${_thumbnail!.path}');
-                          Navigator.of(context).pushNamed('/home');
-                  //Navigator.pushReplacementNamed(context, '/home');
+                          //Navigator.of(context).pushNamed('/home');
+                  Navigator.pushReplacementNamed(context, '/home');
                   // Dialog TEST
                   setState(() {
                     _isDialogOpen = true;
