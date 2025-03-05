@@ -184,6 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () async {
                       final prefs = await SharedPreferences.getInstance();
                       prefs.clear();
+                      Navigator.pop(context);
                       Navigator.pushReplacementNamed(context, "/login");
                     },
                     child: Container(
