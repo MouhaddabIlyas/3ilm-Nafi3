@@ -6,7 +6,10 @@ import 'package:_3ilm_nafi3/constants.dart';
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
+    BuildContext context,
+    Widget child,
+    AxisDirection axisDirection,
+  ) {
     return child;
   }
 }
@@ -70,16 +73,25 @@ class _UploadPageState extends State<UploadPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 30.0, top: 30.0),
-                    child: Center(
-                      child: Text(
-                        "Ajouter Une Vidéo",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 30.0, top: 30.0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.arrow_back),
                         ),
-                      ),
+                        Flexible(
+                          flex: 5,
+                          child: const Text(
+                            "Ajouter Une Vidéo",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 
@@ -90,9 +102,10 @@ class _UploadPageState extends State<UploadPage> {
                     decoration: InputDecoration(
                       labelText: 'Titre',
                       labelStyle: TextStyle(
-                        color: _titleFocusNode.hasFocus
-                            ? Colors.green
-                            : Colors.black,
+                        color:
+                            _titleFocusNode.hasFocus
+                                ? Colors.green
+                                : Colors.black,
                       ),
                       border: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(
@@ -144,38 +157,42 @@ class _UploadPageState extends State<UploadPage> {
                     Wrap(
                       spacing: 8.0,
                       runSpacing: 8.0,
-                      children: themes.map((theme) {
-                        return ChoiceChip(
-                          label: Text(
-                            theme,
-                            style: const TextStyle(fontSize: 10),
-                          ),
-                          selected: selectedThemes.contains(theme),
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                if (selectedThemes.length < 3) {
-                                  selectedThemes.add(theme);
-                                }
-                              } else {
-                                selectedThemes.remove(theme);
-                              }
-                            });
-                          },
-                          selectedColor: Colors.green,
-                          labelStyle: TextStyle(
-                            color: selectedThemes.contains(theme)
-                                ? Colors.white
-                                : Colors.black,
-                          ),
-                        );
-                      }).toList(),
+                      children:
+                          themes.map((theme) {
+                            return ChoiceChip(
+                              label: Text(
+                                theme,
+                                style: const TextStyle(fontSize: 10),
+                              ),
+                              selected: selectedThemes.contains(theme),
+                              onSelected: (selected) {
+                                setState(() {
+                                  if (selected) {
+                                    if (selectedThemes.length < 3) {
+                                      selectedThemes.add(theme);
+                                    }
+                                  } else {
+                                    selectedThemes.remove(theme);
+                                  }
+                                });
+                              },
+                              selectedColor: Colors.green,
+                              labelStyle: TextStyle(
+                                color:
+                                    selectedThemes.contains(theme)
+                                        ? Colors.white
+                                        : Colors.black,
+                              ),
+                            );
+                          }).toList(),
                     ),
                   const SizedBox(height: 20),
 
                   // Thumbnail Selector
-                  const Text('Selectionnez un intervenant',
-                      style: TextStyle(fontSize: 16)),
+                  const Text(
+                    'Selectionnez un intervenant',
+                    style: TextStyle(fontSize: 16),
+                  ),
                   const SizedBox(height: 10),
                   // Scholar Selector
                   Align(
@@ -246,26 +263,28 @@ class _UploadPageState extends State<UploadPage> {
                       Wrap(
                         spacing: 8.0,
                         runSpacing: 8.0,
-                        children: scholars.map((scholar) {
-                          return ChoiceChip(
-                            label: Text(
-                              scholar,
-                              style: const TextStyle(fontSize: 10),
-                            ),
-                            selected: selectedScholar == scholar,
-                            onSelected: (selected) {
-                              setState(() {
-                                selectedScholar = selected ? scholar : null;
-                              });
-                            },
-                            selectedColor: Colors.green,
-                            labelStyle: TextStyle(
-                              color: selectedScholar == scholar
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          );
-                        }).toList(),
+                        children:
+                            scholars.map((scholar) {
+                              return ChoiceChip(
+                                label: Text(
+                                  scholar,
+                                  style: const TextStyle(fontSize: 10),
+                                ),
+                                selected: selectedScholar == scholar,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    selectedScholar = selected ? scholar : null;
+                                  });
+                                },
+                                selectedColor: Colors.green,
+                                labelStyle: TextStyle(
+                                  color:
+                                      selectedScholar == scholar
+                                          ? Colors.white
+                                          : Colors.black,
+                                ),
+                              );
+                            }).toList(),
                       ),
                   ],
 
@@ -300,38 +319,40 @@ class _UploadPageState extends State<UploadPage> {
                       Wrap(
                         spacing: 8.0,
                         runSpacing: 8.0,
-                        children: imams.map((imam) {
-                          return Material(
-                            color: Colors
-                                .transparent,
-                            child: ChoiceChip(
-                              label: Text(
-                                imam,
-                                style: const TextStyle(fontSize: 10),
-                              ),
-                              selected: selectedImam == imam,
-                              onSelected: (selected) {
-                                setState(() {
-                                  selectedImam = selected ? imam : null;
-                                });
-                              },
-                              selectedColor:
-                                  Colors.green,
-                              labelStyle: TextStyle(
-                                color: selectedImam == imam
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                        children:
+                            imams.map((imam) {
+                              return Material(
+                                color: Colors.transparent,
+                                child: ChoiceChip(
+                                  label: Text(
+                                    imam,
+                                    style: const TextStyle(fontSize: 10),
+                                  ),
+                                  selected: selectedImam == imam,
+                                  onSelected: (selected) {
+                                    setState(() {
+                                      selectedImam = selected ? imam : null;
+                                    });
+                                  },
+                                  selectedColor: Colors.green,
+                                  labelStyle: TextStyle(
+                                    color:
+                                        selectedImam == imam
+                                            ? Colors.white
+                                            : Colors.black,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                       ),
                   ],
                   const SizedBox(height: 20),
 
                   // Thumbnail Selector
-                  const Text('Selectionnez une couverture pour votre vidéo',
-                      style: TextStyle(fontSize: 16)),
+                  const Text(
+                    'Selectionnez une couverture pour votre vidéo',
+                    style: TextStyle(fontSize: 16),
+                  ),
                   const SizedBox(height: 10),
                   Center(
                     child: GestureDetector(
@@ -344,15 +365,18 @@ class _UploadPageState extends State<UploadPage> {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.grey),
                         ),
-                        child: _thumbnail == null
-                            ? const Center(child: Text('Choisir couverture'))
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.file(
-                                  _thumbnail!,
-                                  fit: BoxFit.cover,
+                        child:
+                            _thumbnail == null
+                                ? const Center(
+                                  child: Text('Choisir couverture'),
+                                )
+                                : ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    _thumbnail!,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
                       ),
                     ),
                   ),
@@ -389,67 +413,74 @@ class _UploadPageState extends State<UploadPage> {
                             isConsented) {
                           // Proceed to upload video and thumbnail
                           print(
-                              'Uploading video with title: ${_titleController.text}');
+                            'Uploading video with title: ${_titleController.text}',
+                          );
                           print('Selected Themes: $selectedThemes');
                           if (selectedScholar != null && isCheikhSelected) {
                             print('Selected Scholar: $selectedScholar');
                           } else {
                             print('Selected Imam: $selectedImam');
                           }
-                          
+
                           print('Thumbnail Path: ${_thumbnail!.path}');
                           //Navigator.of(context).pushNamed('/home');
-                  Navigator.pushReplacementNamed(context, '/home');
-                  // Dialog TEST
-                  setState(() {
-                    _isDialogOpen = true;
-                  });
-                  showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        backgroundColor: Colors.transparent,
-                        child: Container(
-                          color: Colors.white,
-                          child: Container(
-                            height: MediaQuery.of(context).size.height / 3,
-                            child: Center(
-                              child: Text(
-                                "Votre vidéo a été envoyée pour être visualisée par notre équipe administrative avant d'être approuvée. Cela peut prendre du temps. Vous pouvez continuer à utiliser l'application.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 15,
+                          Navigator.pushReplacementNamed(context, '/home');
+                          // Dialog TEST
+                          setState(() {
+                            _isDialogOpen = true;
+                          });
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                backgroundColor: Colors.transparent,
+                                child: Container(
+                                  color: Colors.white,
+                                  child: Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 3,
+                                    child: Center(
+                                      child: Text(
+                                        "Votre vidéo a été envoyée pour être visualisée par notre équipe administrative avant d'être approuvée. Cela peut prendre du temps. Vous pouvez continuer à utiliser l'application.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ).then((_) {
-                    setState(() {
-                      _isDialogOpen = false;
-                    });
-                  });
-                  // Dialog TEST END
+                              );
+                            },
+                          ).then((_) {
+                            setState(() {
+                              _isDialogOpen = false;
+                            });
+                          });
+                          // Dialog TEST END
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content:
-                                    Text('Veuillez remplir tous les champs!')),
+                              content: Text(
+                                'Veuillez remplir tous les champs!',
+                              ),
+                            ),
                           );
                         }
                       },
                       style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.green),
+                        backgroundColor: MaterialStateProperty.all(
+                          Colors.green,
+                        ),
                       ),
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
-                            vertical: 14.0, horizontal: 30.0),
-                        child: Text('Télécharger Vidéo',
-                            style: TextStyle(fontSize: 16)),
+                          vertical: 14.0,
+                          horizontal: 30.0,
+                        ),
+                        child: Text(
+                          'Télécharger Vidéo',
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ),
                     ),
                   ),

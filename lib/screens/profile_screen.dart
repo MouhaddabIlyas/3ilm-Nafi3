@@ -65,11 +65,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           future: user,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator(color: green));
             }
 
             if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
+              //return Center(child: Text('Error: ${snapshot.error}'));
+              return Center(
+                child: Text(
+                  'Ce service présente un problème actuellement. Veuillez réessayer plus tard.',
+                ),
+              );
             }
 
             if (!snapshot.hasData) {

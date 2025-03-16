@@ -27,7 +27,6 @@ List<String> themes = const [
   "Voyage",
   "Signes",
   "Adkars",
-  "Adkars",
 ];
 
 List<String> scholars = const [
@@ -85,7 +84,7 @@ List<String> scholars = const [
   "Cheikh Tal’at Zahran / الشيخ طلعت زهران",
   "Cheikh Ussamah Ibn Saoud Al Amri / الشيخ أسامة بن سعود العمري",
   "Cheikh Wassiyullah Al Abbas / الشيخ وصي الله عباس",
-  "Cheikh Zayd Al Madkhali / الشيخ زيد المدخلي"
+  "Cheikh Zayd Al Madkhali / الشيخ زيد المدخلي",
 ];
 
 List<String> imams = [
@@ -93,5 +92,36 @@ List<String> imams = [
   "Cheikh Ismaïl Ibn Hādī / الشيخ اسماعيل بن هادي",
   "Cheikh Mehdi Ben naceur / الشيخ مهدي بن ناصر",
   "Cheikh Samy Philippe Chaouche / الشيخ سامي بن عبد الكريم الشاوش",
-  "Cheikh Tahir Abu Sany / الشيخ طاهر أبو سني"
+  "Cheikh Tahir Abu Sany / الشيخ طاهر أبو سني",
 ];
+
+List<String> services_titles = [
+  "Service 1 : Location voitures Maroc 🇲🇦",
+  "Service 2 : Développement applications",
+  "Service 3 : Produit naturels",
+  "Service 4 : Vêtements pour femme",
+  "Service 5 : Omra",
+  "Service 6 : Boutique en ligne",
+  "Service 7 : Montres",
+];
+
+List<String> services_links = [
+  "http://onelink.to/5n88za",
+  "Contacter sur WhatsApp",
+  "https://monjardinprophetique.com",
+  "https://www.anaqacollection.fr",
+  "https://omraprivee.com",
+  "https://www.maktaba-abou-daoud.fr",
+  "https://al-almass.com",
+];
+
+List<String> services_images = [
+  'assets/images/services/s1.jpg',
+  'assets/images/services/s2.jpg',
+  'assets/images/services/s3.jpg',
+  'assets/images/services/s4.jpg',
+  'assets/images/services/s5.jpg',
+  'assets/images/services/s6.jpg',
+  'assets/images/services/s7.jpg',
+]
+;
