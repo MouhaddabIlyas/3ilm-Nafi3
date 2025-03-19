@@ -17,7 +17,7 @@ class PostRegisterPage extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
               const Text(
-                "سلام عليكم ورحمة الله وبركاته",
+                "السلام عليكم ورحمة الله وبركاته",
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.right,
               ),
@@ -34,7 +34,7 @@ class PostRegisterPage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                "Al عilm An Nafiع est une application qui vas te permettre par la grâce d’Allah سبحانه وتعالى "
+                "عilm Nafiع est une application qui vas te permettre par la grâce d’Allah سبحانه وتعالى "
                 "d’apprendre ou d’en savoir plus, sur l’islam authentique « le Coran, la sunna du Messager ﷺ selon la "
                 "compréhension des pieux prédécesseurs.",
                 style: TextStyle(

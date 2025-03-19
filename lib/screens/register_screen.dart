@@ -164,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
-              itemCount: 27,
+              itemCount: 34,
               physics: BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return GestureDetector(

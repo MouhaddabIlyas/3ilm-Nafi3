@@ -66,45 +66,17 @@ class TermsAndConditionsPage extends StatelessWidget {
               const SizedBox(height: 10),
               const Text(
                 "Conditions de partage des vidéos :\n\n"
-                "🟢 La vidéo acceptée : Le savant/ étudiant en science - le thème doivent être est en relation avec la vidéo.\n\n"
-                "🔴 La vidéo refusée : Le savant/ étudiant en science n’est pas en relation avec la vidéo et/ou le thème.\n\n"
-                "🔴 Votre vidéo peut ne pas être accepté si le savant choisit n'accepte pas la diffusion de son visage. \n\n",
+                "🟢 Pour que votre vidéo soit validée :\n"
+                "• Le savant\n"
+                "• ⁠Le(s) thème(s)\n"
+                "       Doivent correspondre \n"
+                "🔴 Vidéo refusée :\n"
+                "• La vidéo comporte des visages\n"
+                "• ⁠Les visages ne sont pas floutés\n"
+                "• ⁠les thèmes / savants ne correspondent pas à la vidéo\n\n",
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
-              const Center(
-                child: Text(
-                  "Nos Services",
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 45),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ServicesScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: green,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.work_outline_rounded, color: Colors.white),
-                      Container(width: 10),
-                      Text("Nos Services"),
-                    ],
-                  ),
-                ),
-              ),
             ],
           ),
         ),

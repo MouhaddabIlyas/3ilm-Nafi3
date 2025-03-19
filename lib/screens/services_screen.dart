@@ -124,7 +124,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                 ),
               ),
               onPressed: () {
-                launchURL("https://www.instagram.com/digilocx/");
+                launchURL("https://www.instagram.com/3iilmnafi3/");
               },
               child: Text(
                 "Proposer mon service",

@@ -1,3 +1,5 @@
+import 'package:_3ilm_nafi3/screens/adkars_page.dart';
+import 'package:_3ilm_nafi3/screens/services_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:_3ilm_nafi3/constants.dart';
@@ -195,11 +197,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _currentIndex = 1;
+  int _currentIndex = 2;
 
   final List<Widget> _pages = [
+    ServicesScreen(),
     TermsAndConditionsPage(),
     HomeScreen(),
+    AdkarsPage(),
     ProfileScreen(),
   ];
 
@@ -220,13 +224,23 @@ class _MainPageState extends State<MainPage> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         iconSize: 35,
+        type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
         items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.language),
+            label: 'Services',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.library_books),
             label: 'Settings',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.mosque), label: 'Home'),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Settings',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
