@@ -29,21 +29,16 @@ class _AdkarsPageState extends State<AdkarsPage> {
               style: TextStyle(fontSize: 26),
               textAlign: TextAlign.center,
             ),
-            //SizedBox(height: 36),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      tasbihs++;
-                    });
-                  },
-                  icon: Icon(Icons.add),
-                ),
-                Text(tasbihs.toString()),
-              ],
+            Text(
+              "سبحان الله\n"
+              "الحمد لله\n"
+              "الله أكبر\n"
+              "لا إله إلا الله\n",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 22),
             ),
+
+            //SizedBox(height: 36),
           ],
         ),
       ),
