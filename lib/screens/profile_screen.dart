@@ -163,7 +163,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 30),
                   GestureDetector(
                     onTap: () {
-                      pickVideo(context);
+                      try {
+                        pickVideo(context);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Veuillez réessayer plus tard.')),
+                        );
+                      }
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 35),
