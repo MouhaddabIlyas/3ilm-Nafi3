@@ -42,7 +42,7 @@ class TermsAndConditionsPage extends StatelessWidget {
               Text(
                 "عilm Nafiع est une application qui vas te permettre par la grâce d’Allah سبحانه وتعالى "
                 "d’apprendre ou d’en savoir plus, sur l’islam authentique « le Coran, la sunna du Messager ﷺ selon la "
-                "compréhension des pieux prédécesseurs.",
+                "compréhension des pieux prédécesseurs.»",
                 style: TextStyle(fontSize: 16, color: green),
               ),
               const SizedBox(height: 10),
@@ -70,10 +70,11 @@ class TermsAndConditionsPage extends StatelessWidget {
                 "• Le savant\n"
                 "• ⁠Le(s) thème(s)\n"
                 "       Doivent correspondre \n"
+                "• Vidéo de 3 minutes maximum\n"
                 "🔴 Vidéo refusée :\n"
-                "• La vidéo comporte des visages\n"
-                "• ⁠Les visages ne sont pas floutés\n"
-                "• ⁠les thèmes / savants ne correspondent pas à la vidéo\n\n",
+                "• La vidéo comporte des visages de savants qui n’autorisent pas la publication de leurs visages\n"
+                "• ⁠les thèmes / savants ne correspondent pas à la vidéo\n"
+                "• ⁠Image inappropriée\n\n",
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),

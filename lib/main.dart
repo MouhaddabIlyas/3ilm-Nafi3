@@ -197,13 +197,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _currentIndex = 2;
+  int _currentIndex = 1;
 
   final List<Widget> _pages = [
-    ServicesScreen(),
+    // ServicesScreen(),
     TermsAndConditionsPage(),
     HomeScreen(),
-    AdkarsPage(),
+    //AdkarsPage(),
     ProfileScreen(),
   ];
 
@@ -226,21 +226,32 @@ class _MainPageState extends State<MainPage> {
         iconSize: 35,
         type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
-        items: const [
+        items: [
+          /*
           BottomNavigationBarItem(
             icon: Icon(Icons.language),
             label: 'Services',
-          ),
+          ),*/
           BottomNavigationBarItem(
             icon: Icon(Icons.library_books),
             label: 'Settings',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.mosque), label: 'Home'),
-
+          BottomNavigationBarItem(
+            icon: ImageIcon(
+              AssetImage('assets/images/logo.png'),
+              color:
+                  _currentIndex == 1
+                      ? Colors.white
+                      : const Color.fromARGB(134, 0, 0, 0),
+              size: 60,
+            ),
+            label: 'Home',
+          ),
+          /*
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Settings',
-          ),
+          ),*/
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),

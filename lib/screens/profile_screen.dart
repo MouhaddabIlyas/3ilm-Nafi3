@@ -23,6 +23,39 @@ Future<User?> fetchUserData() async {
   }
 }
 
+Future<void> updatePic(
+  String username,
+  String password,
+  String newPic,
+  String isAdmin,
+) async {
+  final prefs = await SharedPreferences.getInstance();
+  String? userID = prefs.getString("loggedID");
+
+  final url = Uri.parse(
+    'http://3ilmnafi3.fony5290.odns.fr/api/users/${userID}',
+  );
+
+  final body =
+      isAdmin == "admin"
+          ? jsonEncode({
+            'username': '${username};${password};${newPic};${isAdmin}',
+          })
+          : jsonEncode({'username': '${username};${password};${newPic}'});
+
+  final response = await http.put(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: body,
+  );
+
+  if (response.statusCode == 200) {
+    print('Username updated successfully');
+  } else {
+    print('Failed to update username: ${response.body}');
+  }
+}
+
 class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -30,6 +63,55 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late Future<User?> user;
+
+  void _selectProfilePicture(String u, String p, String a) {
+    String _selectedProfilePicture = "";
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Changer photo de profile"),
+          content: Container(
+            height: 200,
+            width: double.maxFinite,
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: 34,
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedProfilePicture = '${index + 1}';
+                      updatePic(u, p, _selectedProfilePicture, a);
+                    });
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Veuillez rafraichir la page.',
+                                  ),
+                                ),
+                              );
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage(
+                      'assets/images/profiles/profile${index + 1}.PNG',
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -106,22 +188,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       left: MediaQuery.of(context).size.width / 4,
                       right: MediaQuery.of(context).size.width / 4,
                     ),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.black,
-                      child:
-                          user.username.split(";")[2] == "0"
-                              ? Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 100,
-                              )
-                              : null,
-                      backgroundImage:
-                          user.username.split(";")[2] != "0"
-                              ? AssetImage(
-                                "assets/images/small_profiles/profile${user.username.split(";")[2]}.PNG",
-                              )
-                              : null,
+                    child: Stack(
+                      children: [
+                        // Profile Picture
+                        Positioned.fill(
+                          child: CircleAvatar(
+                            backgroundColor: Colors.black,
+                            child:
+                                user.username.split(";")[2] == "0"
+                                    ? Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                      size: 100,
+                                    )
+                                    : null,
+                            backgroundImage:
+                                user.username.split(";")[2] != "0"
+                                    ? AssetImage(
+                                      "assets/images/small_profiles/profile${user.username.split(";")[2]}.PNG",
+                                    )
+                                    : null,
+                          ),
+                        ),
+                        // Edit Button
+                        Positioned(
+                          bottom: 25,
+                          right: 0,
+                          child: IconButton(
+                            onPressed: () async {
+                              String admin = "";
+                              try {
+                                admin = user.username.split(";")[3];
+                              } catch (e) {}
+                              _selectProfilePicture(
+                                user.username.split(";")[0],
+                                user.username.split(";")[1],
+                                admin,
+                              );
+                              
+                              print("Change profile picture tapped");
+                            },
+                            icon: Icon(
+                              Icons.edit,
+                              color: Colors.black,
+                              size: 28,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Container(
@@ -167,7 +281,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         pickVideo(context);
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Veuillez réessayer plus tard.')),
+                          SnackBar(
+                            content: Text('Veuillez réessayer plus tard.'),
+                          ),
                         );
                       }
                     },

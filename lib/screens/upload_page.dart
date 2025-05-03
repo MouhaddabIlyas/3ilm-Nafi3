@@ -2,6 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:_3ilm_nafi3/constants.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:path/path.dart';
+
+
+
+
+Future<String?> uploadVideo(String filePath) async {
+  final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/upload/upload-media');
+  final request = http.MultipartRequest('POST', url);
+
+  final file = await http.MultipartFile.fromPath(
+    'video',
+    filePath,
+    filename: basename(filePath),
+    contentType: MediaType('video', 'mp4'),
+  );
+
+  request.files.add(file);
+
+  try {
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      
+      final videoUrl = responseData['videoUrl'] ?? responseData['url'] ?? responseData['data']['url'];
+
+      return videoUrl;
+    } else {
+      print('Upload failed');
+      print('Body: ${response.body}');
+      return null;
+    }
+  } catch (e) {
+    print('Upload error: $e');
+    return null;
+}
+}
+
+
+
 
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
@@ -62,6 +106,9 @@ class _UploadPageState extends State<UploadPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    uploadVideo(widget.videoPath);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 40.0, left: 16, right: 16),
