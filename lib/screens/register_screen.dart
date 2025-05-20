@@ -36,9 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> saveValues(String username, String password) async {
-    final url = Uri.parse(
-      'http://3ilmnafi3.fony5290.odns.fr/api/users',
-    );
+    final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/users');
     final response = await http.get(url);
     var data = jsonDecode(response.body);
 
@@ -93,18 +91,13 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _uploadUser(User user) async {
-    final url = Uri.parse(
-      'http://3ilmnafi3.fony5290.odns.fr/api/users',
-    ); 
+    final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/users');
 
     try {
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type':
-              'application/json',
-        },
-        body: json.encode(user.toJson()), 
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(user.toJson()),
       );
 
       if (response.statusCode == 201) {
@@ -112,13 +105,26 @@ class _RegisterPageState extends State<RegisterPage> {
         _login(context);
       } else {
         print('Failed to create user: ${response.statusCode}');
-        print(
-          response.body,
-        ); 
+        print(response.body);
       }
     } catch (e) {
       print('Errors: $e');
     }
+  }
+
+  Future<bool> checkExisting(String newUser) async {
+    bool isExisting = false;
+
+    final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/users');
+    final response = await http.get(url);
+    var users = jsonDecode(response.body);
+
+    for (var u in users) {
+      if (u['username'].split(";")[0] == newUser) {
+        isExisting = true;
+      }
+    }
+    return isExisting;
   }
 
   void _createAccount() async {
@@ -135,13 +141,33 @@ class _RegisterPageState extends State<RegisterPage> {
       print('Username: $username, Email: $email, Password: $password');
       print('Selected Profile Picture: $_selectedProfilePicture');
 
-      User user = User(
-        username:
-            "$username;$password;${_selectedProfilePicture != "" ? _selectedProfilePicture.split("profile")[2].split(".")[0] : "0"}",
-        email: email,
-        passwordHash: password,
-      );
-      await _uploadUser(user);
+      if (username.contains(";")) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Votre nom ne peut pas contenir ';'")),
+        );
+        return;
+      } else if (username.contains("/")) {
+         ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Votre nom ne peut pas contenir '/'")),
+        );
+        return;
+      }
+
+      bool isEx = await checkExisting(username);
+
+      if (isEx) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Nom d'utilisateur déjà utilisé.")),
+        );
+      } else {
+        User user = User(
+          username:
+              "$username;$password;${_selectedProfilePicture != "" ? _selectedProfilePicture.split("profile")[2].split(".")[0] : "0"}",
+          email: email,
+          passwordHash: password,
+        );
+        await _uploadUser(user);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Veuillez vérifier vos informations.')),
@@ -329,8 +355,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(color: Colors.black, fontSize: 11),
                   ),
                   GestureDetector(
-                    onTap:
-                        () {
+                    onTap: () {
                       Navigator.pushReplacementNamed(context, '/login');
                     },
                     child: Text(
@@ -342,8 +367,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed:
-                    () => _createAccount(),
+                onPressed: () => _createAccount(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   minimumSize: const Size(double.infinity, 50),
