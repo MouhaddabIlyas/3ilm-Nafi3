@@ -189,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset('assets/images/transparent.png', height: 150),
+            Image.asset('assets/images/transparent.jpg', height: 150),
 
             // Username Field
             TextField(

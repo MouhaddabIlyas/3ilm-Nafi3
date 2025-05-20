@@ -6,12 +6,52 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+Future<bool> createNewVideo({
+  required String title,
+  required String videoUrl,
+  required String uploaderId,
+  required List<String?> themes,
+  required String? imageUrl,
+  required String ref,
+}) async {
+  final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/videos');
 
+  final body = jsonEncode({
+    "title": title,
+    "videoUrl": videoUrl,
+    "uploaderId": uploaderId,
+    "themes": themes,
+    "imageUrl": imageUrl,
+    "reference": ref,
+  });
 
+  try {
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      print("✅ Video created successfully.");
+      return true;
+    } else {
+      print("❌ Failed to create video: ${response.statusCode}");
+      print("Body: ${response.body}");
+      return false;
+    }
+  } catch (e) {
+    print("❌ Error creating video: $e");
+    return false;
+  }
+}
 
 Future<String?> uploadVideo(String filePath) async {
-  final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/upload/upload-media');
+  final url = Uri.parse(
+    'http://3ilmnafi3.fony5290.odns.fr/api/upload/upload-media',
+  );
   final request = http.MultipartRequest('POST', url);
 
   final file = await http.MultipartFile.fromPath(
@@ -29,23 +69,88 @@ Future<String?> uploadVideo(String filePath) async {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      
-      final videoUrl = responseData['videoUrl'] ?? responseData['url'] ?? responseData['data']['url'];
+      final data = responseData['data'];
+
+      final videoUrl = data['video'] as String?;
 
       return videoUrl;
     } else {
       print('Upload failed');
       print('Body: ${response.body}');
-      return null;
+      final responseData = jsonDecode(response.body);
+      final data = responseData['data'];
+
+      final videoUrl = data['video'] as String?;
+
+      return videoUrl;
     }
   } catch (e) {
     print('Upload error: $e');
     return null;
+  }
 }
+
+Future<String?> uploadImage(String filePath) async {
+  final url = Uri.parse(
+    'http://3ilmnafi3.fony5290.odns.fr/api/upload/upload-media',
+  );
+  final request = http.MultipartRequest('POST', url);
+
+  final extension = extensionFromPath(filePath).toLowerCase();
+  final mediaType = getMediaTypeForExtension(extension);
+
+  final file = await http.MultipartFile.fromPath(
+    'image', 
+    filePath,
+    filename: basename(filePath),
+    contentType: mediaType,
+  );
+
+  request.files.add(file);
+
+  try {
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      final imageUrl = responseData['data']?['image'];
+      return imageUrl;
+    } else {
+      final responseData = jsonDecode(response.body);
+      final imageUrl = responseData['data']?['image'];
+      return imageUrl;
+    }
+  } catch (e) {
+    print('Image upload error: $e');
+    return null;
+  }
 }
 
+String extensionFromPath(String filePath) {
+  return extension(filePath).replaceFirst('.', '');
+}
 
-
+MediaType getMediaTypeForExtension(String ext) {
+  switch (ext) {
+    case 'png':
+      return MediaType('image', 'png');
+    case 'jpeg':
+    case 'jpg':
+      return MediaType('image', 'jpeg');
+    case 'gif':
+      return MediaType('image', 'gif');
+    case 'webp':
+      return MediaType('image', 'webp');
+    case 'bmp':
+      return MediaType('image', 'bmp');
+    case 'tiff':
+    case 'tif':
+      return MediaType('image', 'tiff');
+    default:
+      return MediaType('application', 'octet-stream'); // fallback
+  }
+}
 
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
@@ -87,6 +192,8 @@ class _UploadPageState extends State<UploadPage> {
 
   bool _isDialogOpen = false;
 
+  late String thumbnailUrl;
+
   @override
   void dispose() {
     _titleFocusNode.dispose();
@@ -98,16 +205,93 @@ class _UploadPageState extends State<UploadPage> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      setState(() {
+      setState(() async {
         _thumbnail = File(pickedFile.path);
+        thumbnailUrl = pickedFile.path;
       });
     }
   }
 
+  Future<void> uploadWithDialog(
+    BuildContext context,
+    String filePath,
+    String vTitle,
+    List<String?> tIDS,
+    String rf,
+  ) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Téléchargement"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: green),
+              SizedBox(height: 16),
+              Text("Veuillez ne pas fermer l'application..."),
+            ],
+          ),
+        );
+      },
+    );
+
+    
+    final imageUrl = await uploadImage(thumbnailUrl);
+    final result = await uploadVideo(filePath);
+
+    final prefs = await SharedPreferences.getInstance();
+    String? userID = prefs.getString("loggedID");
+
+    
+    Navigator.of(context).pop();
+
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (_) => AlertDialog(
+            title: Text(
+              result != null
+                  ? "Téléchargement réussit!"
+                  : "Téléchargement échoué",
+            ),
+            content: Text(
+              result != null
+                  ? "Votre video a été envoyée pour confirmation par notre équipe administrative."
+                  : "Veuillez réessayer plus tard.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  if (result != null) {
+                    await createNewVideo(
+                      title: vTitle,
+                      videoUrl: result,
+                      imageUrl: imageUrl,
+                      themes: tIDS,
+                      uploaderId: userID!,
+                      ref: rf,
+                    );
+                    Navigator.of(
+                      context,
+                    ).pushReplacementNamed('/home');
+                  }
+                },
+                child: Text("OK", style: TextStyle(color: green)),
+              ),
+            ],
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    uploadVideo(widget.videoPath);
+    
 
     return Scaffold(
       body: Padding(
@@ -405,8 +589,8 @@ class _UploadPageState extends State<UploadPage> {
                     child: GestureDetector(
                       onTap: _pickImage,
                       child: Container(
-                        height: MediaQuery.of(context).size.width * 0.8,
-                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: MediaQuery.of(context).size.width * 0.8 * 1.6,
+                        width: MediaQuery.of(context).size.width * 0.8 * 0.9,
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(8),
@@ -415,10 +599,12 @@ class _UploadPageState extends State<UploadPage> {
                         child:
                             _thumbnail == null
                                 ? const Center(
-                                  child: Text('Choisir couverture'),
+                                  child: Text(
+                                    'Choisir couverture\n(Doit être en ratio 9:16)',
+                                  ),
                                 )
-                                : ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
+                                : AspectRatio(
+                                  aspectRatio: 9 / 16,
                                   child: Image.file(
                                     _thumbnail!,
                                     fit: BoxFit.cover,
@@ -458,59 +644,19 @@ class _UploadPageState extends State<UploadPage> {
                             (selectedScholar != null || selectedImam != null) &&
                             (isCheikhSelected || isImamSelected) &&
                             isConsented) {
-                          // Proceed to upload video and thumbnail
-                          print(
-                            'Uploading video with title: ${_titleController.text}',
-                          );
-                          print('Selected Themes: $selectedThemes');
-                          if (selectedScholar != null && isCheikhSelected) {
-                            print('Selected Scholar: $selectedScholar');
-                          } else {
-                            print('Selected Imam: $selectedImam');
+                          List<String?> thIDs = [];
+                          for (String t in selectedThemes) {
+                            thIDs.add(themesIDs[t]?["id"]);
                           }
 
-                          print('Thumbnail Path: ${_thumbnail!.path}');
-                          //Navigator.of(context).pushNamed('/home');
-                          Navigator.pushReplacementNamed(context, '/home');
-                          // Dialog TEST
-                          setState(() {
-                            _isDialogOpen = true;
-                          });
-                          showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                backgroundColor: Colors.transparent,
-                                child: Container(
-                                  color: Colors.white,
-                                  child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height / 3,
-                                    child: Center(
-                                      child: Text(
-                                        "Votre vidéo a été envoyée pour être visualisée par notre équipe administrative avant d'être approuvée. Cela peut prendre du temps. Vous pouvez continuer à utiliser l'application.",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 15),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ).then((_) {
-                            setState(() {
-                              _isDialogOpen = false;
-                            });
-                          });
-                          // Dialog TEST END
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Veuillez remplir tous les champs!',
-                              ),
-                            ),
+                          String? r = selectedScholar ?? selectedImam;
+
+                          uploadWithDialog(
+                            context,
+                            widget.videoPath,
+                            _titleController.text,
+                            thIDs,
+                            r!,
                           );
                         }
                       },
@@ -526,7 +672,7 @@ class _UploadPageState extends State<UploadPage> {
                         ),
                         child: Text(
                           'Télécharger Vidéo',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                       ),
                     ),

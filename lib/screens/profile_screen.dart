@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:_3ilm_nafi3/screens/myvideos.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -91,12 +92,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     });
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Veuillez rafraichir la page.',
-                                  ),
-                                ),
-                              );
+                      const SnackBar(
+                        content: Text('Veuillez rafraichir la page.'),
+                      ),
+                    );
                   },
                   child: CircleAvatar(
                     backgroundImage: AssetImage(
@@ -225,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 user.username.split(";")[1],
                                 admin,
                               );
-                              
+
                               print("Change profile picture tapped");
                             },
                             icon: Icon(
@@ -253,7 +252,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      //Navigator.of(context).pushNamed('/video_page');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MyVideosPage()),
+                      );
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 35),

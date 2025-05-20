@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:_3ilm_nafi3/models/uploader.dart';
+import 'package:_3ilm_nafi3/screens/video_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:_3ilm_nafi3/constants.dart';
+import 'package:http/http.dart' as http;
+
+import '../models/video.dart';
 
 class TawhidPage extends StatefulWidget {
   const TawhidPage({super.key});
@@ -9,6 +16,29 @@ class TawhidPage extends StatefulWidget {
 }
 
 class _TawhidPageState extends State<TawhidPage> {
+  late Future<List<Video>> videosFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    videosFuture = fetchVideos("");
+  }
+
+  Future<List<Video>> fetchVideos(String themeId) async {
+    final url = Uri.parse(
+      'http://3ilmnafi3.fony5290.odns.fr/api/videos/isvalid/theme/92a89d9e-ebf2-4ed3-9ce4-03d06f7a6690',
+    );
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List videosJson = data['videos'];
+      return videosJson.map((json) => Video.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load videos');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,9 +128,105 @@ class _TawhidPageState extends State<TawhidPage> {
                       ),
                     ),
                     Expanded(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(green),
+                      child: Container(
+                        color: Colors.white,
+                        child: FutureBuilder<List<Video>>(
+                          future: videosFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(color: green),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text("Erreur: ${snapshot.error}"),
+                              );
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.isEmpty) {
+                              return Center(
+                                child: Text("Aucune vidéo trouvée."),
+                              );
+                            }
+
+                            final videos = snapshot.data!;
+
+                            return GridView.builder(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                bottom: 10,
+                                top: 50,
+                              ),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 15,
+                                    crossAxisSpacing: 15,
+                                    childAspectRatio: 0.8,
+                                  ),
+                              itemCount: videos.length,
+                              itemBuilder: (context, index) {
+                                final video = videos[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => VideoPage(
+                                              videoId: video.id,
+                                              videoUrl: video.videoUrl,
+                                              title: video.title,
+                                              uploader: Uploader(
+                                                id: video.uploader['id'],
+                                                isAdmin: false,
+                                                username:
+                                                    video.uploader['username']
+                                                        .split(";")[0],
+                                                email: "test",
+                                                profilePic:
+                                                    video.uploader['username']
+                                                        .split(";")[2],
+                                              ),
+                                              likeCount: video.likesCount,
+                                              refr: video.ref,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: AspectRatio(
+                                          aspectRatio: 9 / 16,
+                                          child: Image.network(
+                                            video.imageUrl,
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 6),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.favorite_border,
+                                            size: 18,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(video.likesCount.toString()),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         ),
                       ),
                     ),

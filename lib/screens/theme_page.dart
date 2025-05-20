@@ -1,84 +1,17 @@
+import 'package:_3ilm_nafi3/models/uploader.dart';
+import 'package:_3ilm_nafi3/screens/video_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:_3ilm_nafi3/constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/theme.dart';
-
-class Uploader {
-  final String id;
-  final String username;
-
-  Uploader({required this.id, required this.username});
-
-  factory Uploader.fromJson(Map<String, dynamic> json) {
-    return Uploader(id: json['id'], username: json['username']);
-  }
-}
-
-class Video {
-  final String id;
-  final String title;
-  final String videoUrl;
-  final String uploaderId;
-  final List<String> themes;
-  final int likesCount;
-  final String imageUrl;
-  final String reference;
-  final Uploader uploader;
-
-  Video({
-    required this.id,
-    required this.title,
-    required this.videoUrl,
-    required this.uploaderId,
-    required this.themes,
-    required this.likesCount,
-    required this.imageUrl,
-    required this.reference,
-    required this.uploader,
-  });
-
-  factory Video.fromJson(Map<String, dynamic> json) {
-    List<String> themesList = List<String>.from(
-      json['themes'].map((theme) => theme['name']),
-    );
-
-    return Video(
-      id: json['id'],
-      title: json['title'],
-      videoUrl: json['videoUrl'],
-      uploaderId: json['uploaderId'],
-      themes: themesList,
-      likesCount: json['likesCount'],
-      imageUrl: json['imageUrl'],
-      reference: json['reference'],
-      uploader: Uploader.fromJson(json['uploader']),
-    );
-  }
-}
-
-Future<List<Video>> fetchVideos() async {
-  final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/videos');
-
-  try {
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-
-      return data.map((json) => Video.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load videos');
-    }
-  } catch (error) {
-    throw Exception('Error fetching videos: $error');
-  }
-}
+import '../constants.dart';
+import '../models/video.dart'; // ← Add this
 
 class ThemePage extends StatefulWidget {
   final String theme;
-  final String videosPath;
+  final String videosPath; // ← theme ID goes here
   final String imagePath;
+
+  
 
   const ThemePage({
     Key? key,
@@ -92,11 +25,27 @@ class ThemePage extends StatefulWidget {
 }
 
 class _ThemePageState extends State<ThemePage> {
-  late Future<VideoTheme> themeData;
+  late Future<List<Video>> videosFuture;
 
   @override
   void initState() {
     super.initState();
+    videosFuture = fetchVideos(widget.videosPath);
+  }
+
+  Future<List<Video>> fetchVideos(String themeId) async {
+    final url = Uri.parse(
+      'http://3ilmnafi3.fony5290.odns.fr/api/videos/isvalid/theme/$themeId',
+    );
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List videosJson = data['videos'];
+      return videosJson.map((json) => Video.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load videos');
+    }
   }
 
   @override
@@ -104,6 +53,7 @@ class _ThemePageState extends State<ThemePage> {
     return Scaffold(
       body: Stack(
         children: [
+          // Top Image Banner
           Positioned(
             top: 0,
             left: 0,
@@ -129,6 +79,8 @@ class _ThemePageState extends State<ThemePage> {
               ),
             ),
           ),
+
+          // Videos Grid
           Positioned(
             top: MediaQuery.of(context).size.height / 3 - 30,
             left: 0,
@@ -141,46 +93,103 @@ class _ThemePageState extends State<ThemePage> {
               ),
               child: Container(
                 color: Colors.white,
-                child: Center(child: CircularProgressIndicator(color: green,)),
-                /*child: FutureBuilder<List<Video>>(
-                  future: fetchVideos(),
+                child: FutureBuilder<List<Video>>(
+                  future: videosFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(green),
-                        ),
+                        child: CircularProgressIndicator(color: green),
                       );
                     } else if (snapshot.hasError) {
-                      print(snapshot.data);
-                      return Center(child: Text('Error: ${snapshot.error}'));
+                      return Center(child: Text("Erreur: ${snapshot.error}"));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('No videos available'));
-                    } else {
-                      final videos = snapshot.data!;
-
-                      return ListView.builder(
-                        itemCount: videos.length,
-                        itemBuilder: (context, index) {
-                          final video = videos[index];
-                          return ListTile(
-                            title: Text(video.title),
-                            subtitle: Text(video.uploaderId),
-                            leading: Image.network(
-                              video.imageUrl,
-                            ), // Display the image
-                            onTap: () {
-                              // Handle video tap, like opening a new screen or playing the video
-                            },
-                          );
-                        },
-                      );
+                      return Center(child: Text("Aucune vidéo trouvée."));
                     }
+
+                    final videos = snapshot.data!;
+
+                    return GridView.builder(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        bottom: 10,
+                        top: 50,
+                      ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 15,
+                        crossAxisSpacing: 15,
+                        childAspectRatio: 0.8,
+                      ),
+                      itemCount: videos.length,
+                      itemBuilder: (context, index) {
+                        final video = videos[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => VideoPage(
+                                      videoId: video.id,
+                                      videoUrl: video.videoUrl,
+                                      title: video.title,
+                                      uploader: Uploader(
+                                        id: video.uploader['id'],
+                                        isAdmin: false,
+                                        username:
+                                            video.uploader['username'].split(
+                                              ";",
+                                            )[0],
+                                        email: "test",
+                                        profilePic:
+                                            video.uploader['username'].split(
+                                              ";",
+                                            )[2],
+                                      ),
+                                      likeCount: video.likesCount,
+                                      refr: video.ref,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: AspectRatio(
+                                  aspectRatio: 9 / 16,
+                                  child: Image.network(
+                                    video.imageUrl,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.favorite_border,
+                                    size: 18,
+                                    color: Colors.red,
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(video.likesCount.toString()),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
                   },
-                ),*/
+                ),
               ),
             ),
           ),
+
+          // Back Button
           Positioned(
             top: 40,
             left: 10,
