@@ -80,7 +80,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
             const SizedBox(height: 20),
             Text(
-              widget.user.username,
+              widget.user.username.replaceAll(RegExp(r'/'), ''),
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             Padding(

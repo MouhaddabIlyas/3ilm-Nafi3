@@ -59,7 +59,7 @@ class _MyVideosPageState extends State<MyVideosPage> {
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Failed to delete video')));
+      ).showSnackBar(SnackBar(content: Text('Veuillez réessayer plus tard.')));
     }
   }
 

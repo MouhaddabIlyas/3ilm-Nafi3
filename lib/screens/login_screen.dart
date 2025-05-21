@@ -74,8 +74,8 @@ class _LoginPageState extends State<LoginPage> {
 
       var loggedUser;
       for (var element in data) {
-        if (element["username"].contains(_usernameController.text) &&
-            element["username"].contains(_passwordController.text)) {
+        if (element["username"].contains("/${_usernameController.text};") &&
+            element["username"].contains(";${_passwordController.text};")) {
           loggedUser = element;
           break;
         }

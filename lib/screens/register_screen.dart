@@ -5,6 +5,7 @@ import 'package:_3ilm_nafi3/models/user.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -33,6 +34,20 @@ class _RegisterPageState extends State<RegisterPage> {
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  void launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+
+    print("Trying to launch URL: $url");
+
+    // General URL launch
+    if (await canLaunchUrl(uri)) {
+      print("Launching URL: $url");
+      await launchUrl(uri);
+    } else {
+      print("Could not launch $url");
+    }
   }
 
   Future<void> saveValues(String username, String password) async {
@@ -120,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
     var users = jsonDecode(response.body);
 
     for (var u in users) {
-      if (u['username'].split(";")[0] == newUser) {
+      if (u['username'].split(";")[0] == "/$newUser") {
         isExisting = true;
       }
     }
@@ -137,7 +152,7 @@ class _RegisterPageState extends State<RegisterPage> {
         email.isNotEmpty &&
         password.isNotEmpty &&
         password == verifyPassword &&
-        (email.contains("gmail.com") || email.contains("hotmail"))) {
+        (email.contains("gmail.com") || email.contains("hotmail")) && readTC) {
       print('Username: $username, Email: $email, Password: $password');
       print('Selected Profile Picture: $_selectedProfilePicture');
 
@@ -147,8 +162,19 @@ class _RegisterPageState extends State<RegisterPage> {
         );
         return;
       } else if (username.contains("/")) {
-         ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Votre nom ne peut pas contenir '/'")),
+        );
+        return;
+      }
+
+      if (password.length < 6) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Votre mot de passe doit contenir au moins 6 caractères.",
+            ),
+          ),
         );
         return;
       }
@@ -162,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
       } else {
         User user = User(
           username:
-              "$username;$password;${_selectedProfilePicture != "" ? _selectedProfilePicture.split("profile")[2].split(".")[0] : "0"}",
+              "/$username;$password;${_selectedProfilePicture != "" ? _selectedProfilePicture.split("profile")[2].split(".")[0] : "0"}",
           email: email,
           passwordHash: password,
         );
@@ -216,6 +242,8 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  bool readTC = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,7 +260,6 @@ class _RegisterPageState extends State<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Image.asset('assets/images/transparent.jpg', height: 150),
-
               // Username Field
               TextField(
                 controller: _usernameController,
@@ -365,7 +392,44 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Checkbox(
+                      activeColor: green,
+                      value: readTC,
+                      onChanged: (value) {
+                        setState(() {
+                          readTC = value!;
+                        });
+                      },
+                    ),
+                    Text(
+                      "Je confirme avoir lu   ",
+                      style: TextStyle(fontSize: 11),
+                    ),
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: (){
+                          launchURL("https://e-kitab.my.canva.site/3ilmnafi3");
+                        },
+                        child: Text(
+                          "les Mentions Lègales, Politique de Confidentialité et CGU de 3ilm Nafi3",
+                          style: TextStyle(
+                            color: green,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: () => _createAccount(),
                 style: ElevatedButton.styleFrom(

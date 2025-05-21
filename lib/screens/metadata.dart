@@ -30,7 +30,7 @@ class VideoMetadataPage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Mise en ligne par : $uploaderUsername',
+                'Mise en ligne par : ${uploaderUsername.replaceAll(RegExp(r'/'), '')}',
                 style: const TextStyle(fontSize: 18, color: Colors.grey),
               ),
           

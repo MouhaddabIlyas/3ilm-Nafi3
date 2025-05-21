@@ -24,6 +24,28 @@ Future<User?> fetchUserData() async {
   }
 }
 
+Future<void> deleteAcc(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  String? uID = prefs.getString("loggedID");
+
+  final response = await http.delete(
+    Uri.parse("https://3ilmnafi3.digilocx.fr/api/users/$uID"),
+  );
+  if (response.statusCode == 200) {
+    prefs.clear();
+    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, "/login");
+    print("succes");
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Compte supprimé avec succès :(')));
+  } else {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Échec de suppresion du compte')));
+  }
+}
+
 Future<void> updatePic(
   String username,
   String password,
@@ -81,14 +103,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
-              itemCount: 34,
+              itemCount: 35,
               physics: BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
                       _selectedProfilePicture = '${index + 1}';
-                      updatePic(u, p, _selectedProfilePicture, a);
+                      if (_selectedProfilePicture == '35') {
+                        updatePic(u, p, "0", a);
+                      } else {
+                        updatePic(u, p, _selectedProfilePicture, a);
+                      }
                     });
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -152,8 +178,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (snapshot.hasError) {
               //return Center(child: Text('Error: ${snapshot.error}'));
               return Center(
-                child: Text(
-                  'Ce service présente un problème actuellement. Veuillez réessayer plus tard.',
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Ce service présente un problème actuellement. Veuillez vous déconnecter et réessayer plus tard.',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 30),
+                    GestureDetector(
+                      onTap: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        prefs.remove("loggedID");
+                        //Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, "/login");
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 35),
+                        padding: const EdgeInsets.all(20),
+                        color: green,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.logout_rounded, color: Colors.white),
+                            SizedBox(width: 15),
+                            Text(
+                              "Se Déconnecter",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               );
             }
@@ -248,7 +308,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     padding: EdgeInsets.only(bottom: 30, left: 55),
-                    child: Text(user.username.split(";")[0]),
+                    child: Text(
+                      user.username.split(";")[0].replaceAll(RegExp(r'/'), ''),
+                    ),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -269,6 +331,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              fontSize: 10,
                             ),
                           ),
                         ],
@@ -301,6 +364,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              fontSize: 10,
                             ),
                           ),
                         ],
@@ -311,14 +375,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   GestureDetector(
                     onTap: () async {
                       final prefs = await SharedPreferences.getInstance();
-                      prefs.clear();
+                      prefs.remove("loggedID");
                       //Navigator.pop(context);
                       Navigator.pushReplacementNamed(context, "/login");
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 35),
                       padding: const EdgeInsets.all(20),
-                      color: const Color.fromARGB(255, 198, 17, 4),
+                      color: green,
                       child: const Row(
                         children: [
                           Icon(Icons.logout_rounded, color: Colors.white),
@@ -328,6 +392,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  GestureDetector(
+                    onTap: () async {
+                      /*
+                      final prefs = await SharedPreferences.getInstance();
+                      prefs.clear();
+                      //Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, "/login");*/
+
+                      showDialog(
+                        context: context,
+                        builder:
+                            (context) => AlertDialog(
+                              title: Text(
+                                'Supprimer',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              content: Text(
+                                'Une fois confirmée, cette étape est irréversible.\nVoulez-vous vraiment supprimer votre compte?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(
+                                    'Annuler',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    deleteAcc(context);
+                                  },
+                                  child: Text(
+                                    'Supprimer',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 35),
+                      padding: const EdgeInsets.all(20),
+                      color: const Color.fromARGB(255, 198, 17, 4),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.delete, color: Colors.white),
+                          SizedBox(width: 15),
+                          Text(
+                            "Supprimer mon Compte",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
                             ),
                           ),
                         ],
