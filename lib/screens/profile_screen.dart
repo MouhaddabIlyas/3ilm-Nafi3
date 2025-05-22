@@ -13,7 +13,7 @@ Future<User?> fetchUserData() async {
   String? userID = prefs.getString("loggedID");
 
   final url = Uri.parse(
-    'http://3ilmnafi3.fony5290.odns.fr/api/users/${userID}',
+    'https://3ilmnafi3.digilocx.fr/api/users/${userID}',
   );
   final response = await http.get(url);
 
@@ -56,7 +56,7 @@ Future<void> updatePic(
   String? userID = prefs.getString("loggedID");
 
   final url = Uri.parse(
-    'http://3ilmnafi3.fony5290.odns.fr/api/users/${userID}',
+    'https://3ilmnafi3.digilocx.fr/api/users/${userID}',
   );
 
   final body =

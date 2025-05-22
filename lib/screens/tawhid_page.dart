@@ -26,7 +26,7 @@ class _TawhidPageState extends State<TawhidPage> {
 
   Future<List<Video>> fetchVideos(String themeId) async {
     final url = Uri.parse(
-      'http://3ilmnafi3.fony5290.odns.fr/api/videos/isvalid/theme/92a89d9e-ebf2-4ed3-9ce4-03d06f7a6690',
+      'https://3ilmnafi3.digilocx.fr/api/videos/isvalid/theme/92a89d9e-ebf2-4ed3-9ce4-03d06f7a6690',
     );
     final response = await http.get(url);
 
@@ -140,7 +140,7 @@ class _TawhidPageState extends State<TawhidPage> {
                               );
                             } else if (snapshot.hasError) {
                               return Center(
-                                child: Text("Erreur: ${snapshot.error}"),
+                                child: Text("Veuillez vérifier votre connection et réessayez plus tard."),
                               );
                             } else if (!snapshot.hasData ||
                                 snapshot.data!.isEmpty) {

@@ -16,7 +16,7 @@ Future<bool> createNewVideo({
   required String? imageUrl,
   required String ref,
 }) async {
-  final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/videos');
+  final url = Uri.parse('https://3ilmnafi3.digilocx.fr/api/videos');
 
   final body = jsonEncode({
     "title": title,
@@ -50,7 +50,7 @@ Future<bool> createNewVideo({
 
 Future<String?> uploadVideo(String filePath) async {
   final url = Uri.parse(
-    'http://3ilmnafi3.fony5290.odns.fr/api/upload/upload-media',
+    'https://3ilmnafi3.digilocx.fr/api/upload/upload-media',
   );
   final request = http.MultipartRequest('POST', url);
 
@@ -92,7 +92,7 @@ Future<String?> uploadVideo(String filePath) async {
 
 Future<String?> uploadImage(String filePath) async {
   final url = Uri.parse(
-    'http://3ilmnafi3.fony5290.odns.fr/api/upload/upload-media',
+    'https://3ilmnafi3.digilocx.fr/api/upload/upload-media',
   );
   final request = http.MultipartRequest('POST', url);
 

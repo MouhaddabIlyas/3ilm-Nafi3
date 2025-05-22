@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     final prefs = await SharedPreferences.getInstance();
     String? userID = prefs.getString("loggedID");
     final url = Uri.parse(
-      'http://3ilmnafi3.fony5290.odns.fr/api/users/${userID}',
+      'https://3ilmnafi3.digilocx.fr/api/users/${userID}',
     ); 
     final response = await http.get(url);
 
@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
      
       final url = Uri.parse(
-        'http://3ilmnafi3.fony5290.odns.fr/api/users',
+        'https://3ilmnafi3.digilocx.fr/api/users',
       ); 
       final response = await http.get(url);
       var data = jsonDecode(response.body);

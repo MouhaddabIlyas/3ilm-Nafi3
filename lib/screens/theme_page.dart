@@ -35,7 +35,7 @@ class _ThemePageState extends State<ThemePage> {
 
   Future<List<Video>> fetchVideos(String themeId) async {
     final url = Uri.parse(
-      'http://3ilmnafi3.fony5290.odns.fr/api/videos/isvalid/theme/$themeId',
+      'https://3ilmnafi3.digilocx.fr/api/videos/isvalid/theme/$themeId',
     );
     final response = await http.get(url);
 
@@ -101,7 +101,7 @@ class _ThemePageState extends State<ThemePage> {
                         child: CircularProgressIndicator(color: green),
                       );
                     } else if (snapshot.hasError) {
-                      return Center(child: Text("Erreur: ${snapshot.error}"));
+                      return Center(child: Text("Veuillez vérifier votre connection et réessayez plus tard."));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return Center(child: Text("Aucune vidéo trouvée."));
                     }

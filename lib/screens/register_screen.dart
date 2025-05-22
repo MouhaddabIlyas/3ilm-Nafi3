@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> saveValues(String username, String password) async {
-    final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/users');
+    final url = Uri.parse('https://3ilmnafi3.digilocx.fr/api/users');
     final response = await http.get(url);
     var data = jsonDecode(response.body);
 
@@ -106,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _uploadUser(User user) async {
-    final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/users');
+    final url = Uri.parse('https://3ilmnafi3.digilocx.fr/api/users');
 
     try {
       final response = await http.post(
@@ -130,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<bool> checkExisting(String newUser) async {
     bool isExisting = false;
 
-    final url = Uri.parse('http://3ilmnafi3.fony5290.odns.fr/api/users');
+    final url = Uri.parse('https://3ilmnafi3.digilocx.fr/api/users');
     final response = await http.get(url);
     var users = jsonDecode(response.body);
 
