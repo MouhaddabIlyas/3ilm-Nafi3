@@ -198,9 +198,8 @@ class _VideoPageState extends State<VideoPage> {
             ),
           ),
           Positioned(
-            top: 30,
-            left: 0,
-            right: 325,
+           width: 50,
+           top: 25,
             child: IconButton(
               onPressed: () {
                 Navigator.pop(context);
