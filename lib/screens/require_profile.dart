@@ -34,45 +34,47 @@ class _RequireProfileState extends State<RequireProfile> {
           return ProfileScreen();
         } else {
           return Scaffold(
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(25),
-                  child: Text(
-                    "Vous devez vous connecter pour pouvoir accéder à la page \"Profile\".",
-                    textAlign: TextAlign.center,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Text(
+                      "Vous devez vous connecter pour pouvoir accéder à la page \"Profile\".",
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacementNamed("/login");
-                  },
-                  child: const Text("Se connecter"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: green,
-                    foregroundColor: Colors.white,
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacementNamed("/login");
+                    },
+                    child: const Text("Se connecter"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: green,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(25),
-                  child: Text(
-                    "Vous n'avez pas de compte?",
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Text(
+                      "Vous n'avez pas de compte?",
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                     Navigator.of(context).pushReplacementNamed("/register");
-                  },
-                  child: const Text("Créer un compte"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: green,
-                    foregroundColor: Colors.white,
+                  ElevatedButton(
+                    onPressed: () {
+                       Navigator.of(context).pushReplacementNamed("/register");
+                    },
+                    child: const Text("Créer un compte"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: green,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         }
