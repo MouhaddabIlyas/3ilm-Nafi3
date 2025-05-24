@@ -18,18 +18,12 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _navigateToHome() async {
     Timer(const Duration(seconds: 3), () async {
       final prefs = await SharedPreferences.getInstance();
-      String? userID = prefs.getString("loggedID");
       String? isAdmin = prefs.getString("admin");
-      if (userID != null) {
-        if (isAdmin == "yes") {
-          Navigator.pushReplacementNamed(context, "/adminConsole");
-        } else {
-          Navigator.pushReplacementNamed(context, "/home");
-        }
+      if (isAdmin == "yes") {
+        Navigator.pushReplacementNamed(context, "/adminConsole");
       } else {
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, "/home");
       }
-      
     });
   }
 
@@ -51,9 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               child: Image.asset('assets/images/aya.png'),
             ),
-            const CircularProgressIndicator(
-              color: Colors.orange,
-            ),
+            const CircularProgressIndicator(color: Colors.orange),
           ],
         ),
       ),

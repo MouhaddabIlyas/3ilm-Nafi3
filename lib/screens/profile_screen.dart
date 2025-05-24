@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:_3ilm_nafi3/screens/myvideos.dart';
+import 'package:_3ilm_nafi3/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -12,9 +13,7 @@ Future<User?> fetchUserData() async {
   final prefs = await SharedPreferences.getInstance();
   String? userID = prefs.getString("loggedID");
 
-  final url = Uri.parse(
-    'https://3ilmnafi3.digilocx.fr/api/users/${userID}',
-  );
+  final url = Uri.parse('https://3ilmnafi3.digilocx.fr/api/users/${userID}');
   final response = await http.get(url);
 
   if (response.statusCode == 200) {
@@ -34,8 +33,10 @@ Future<void> deleteAcc(BuildContext context) async {
   if (response.statusCode == 200) {
     prefs.clear();
     Navigator.pop(context);
-    Navigator.pushReplacementNamed(context, "/login");
-    print("succes");
+    Navigator.of(
+      context,
+    ).pushReplacement(MaterialPageRoute(builder: (context) => SplashScreen()));
+
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('Compte supprimé avec succès :(')));
@@ -55,9 +56,7 @@ Future<void> updatePic(
   final prefs = await SharedPreferences.getInstance();
   String? userID = prefs.getString("loggedID");
 
-  final url = Uri.parse(
-    'https://3ilmnafi3.digilocx.fr/api/users/${userID}',
-  );
+  final url = Uri.parse('https://3ilmnafi3.digilocx.fr/api/users/${userID}');
 
   final body =
       isAdmin == "admin"
@@ -375,9 +374,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   GestureDetector(
                     onTap: () async {
                       final prefs = await SharedPreferences.getInstance();
-                      prefs.remove("loggedID");
+                      prefs.clear();
                       //Navigator.pop(context);
-                      Navigator.pushReplacementNamed(context, "/login");
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => SplashScreen()),
+                      );
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 35),

@@ -41,13 +41,13 @@ class TermsAndConditionsPage extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 "عilm Nafiع est une application qui vas te permettre par la grâce d’Allah سبحانه وتعالى "
-                "d’apprendre ou d’en savoir plus, sur l’islam authentique « le Coran, la sunna du Messager ﷺ selon la "
-                "compréhension des pieux prédécesseurs.»",
+                "d’apprendre ou d’en savoir plus, sur l’islam authentique : le Coran, la sunna du Messager ﷺ selon la "
+                "compréhension des pieux prédécesseurs.",
                 style: TextStyle(fontSize: 16, color: green),
               ),
               const SizedBox(height: 10),
               const Text(
-                "Il y a aussi la mise en place de partage de vidéo pour espérer une sadaka Jariya ( صدقة جارية) in sha Allah.\n"
+                "Une fonctionnalité de partage de vidéos est également mise en place afin d'espérer une sadaka Jariya (صدقة جارية)  in shâ’ Allah.\n"
                 "Qu’Allah nous facilite et accepte nos œuvres.\n",
                 style: TextStyle(fontSize: 16),
               ),
@@ -71,7 +71,8 @@ class TermsAndConditionsPage extends StatelessWidget {
                 "• ⁠Le(s) thème(s)\n"
                 "       Doivent correspondre \n"
                 "• Vidéo de 3 minutes maximum\n"
-                "🔴 Vidéo refusée :\n"
+                "• Il faut attendre la validation d’une vidéo avant d’en envoyer une autre\n\n"
+                "🔴 Une vidéo sera refusée :\n"
                 "• La vidéo comporte des visages de savants qui n’autorisent pas la publication de leurs visages\n"
                 "• ⁠les thèmes / savants ne correspondent pas à la vidéo\n"
                 "• ⁠Image inappropriée\n\n",

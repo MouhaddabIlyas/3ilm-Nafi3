@@ -1,5 +1,6 @@
 import 'package:_3ilm_nafi3/screens/adkars_page.dart';
 import 'package:_3ilm_nafi3/screens/myvideos.dart';
+import 'package:_3ilm_nafi3/screens/require_profile.dart';
 import 'package:_3ilm_nafi3/screens/services_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -206,7 +207,8 @@ class _MainPageState extends State<MainPage> {
     TermsAndConditionsPage(),
     HomeScreen(),
     //AdkarsPage(),
-    ProfileScreen(),
+    //ProfileScreen(),
+    RequireProfile(),
   ];
 
   void _onItemTapped(int index) {

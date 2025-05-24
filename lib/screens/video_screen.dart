@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:_3ilm_nafi3/constants.dart';
 import 'package:_3ilm_nafi3/models/uploader.dart';
 import 'package:_3ilm_nafi3/screens/metadata.dart';
 import 'package:_3ilm_nafi3/screens/user_profile_page.dart';
@@ -74,14 +75,22 @@ class _VideoPageState extends State<VideoPage> {
 
   Future<void> _loadLikeStatus() async {
     final prefs = await SharedPreferences.getInstance();
+    bool isLogged = prefs.getString("loggedID")!.isNotEmpty ? true : false;
     final likedVideos = prefs.getStringList('liked_videos') ?? [];
     setState(() {
-      isFavorite = likedVideos.contains(widget.videoId);
+      if (isLogged) {
+        isFavorite = likedVideos.contains(widget.videoId);
+      } else {
+        isFavorite = false;
+      }
     });
   }
 
   Future<void> _toggleFavorite() async {
-    final prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
+  bool isLogged = prefs.getString("loggedID")?.isNotEmpty ?? false;
+
+  if (isLogged) {
     final likedVideos = prefs.getStringList('liked_videos') ?? [];
 
     bool wasFavorite = isFavorite;
@@ -98,17 +107,11 @@ class _VideoPageState extends State<VideoPage> {
       prefs.setStringList('liked_videos', likedVideos);
     });
 
-    
-    final url = Uri.parse(
-      'https://3ilmnafi3.digilocx.fr/api/videos/${widget.videoId}',
-    );
+    final url = Uri.parse('https://3ilmnafi3.digilocx.fr/api/videos/${widget.videoId}');
     try {
       final response = await http.put(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-          
-        },
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'likesCount': widget.likeCount}),
       );
 
@@ -118,7 +121,25 @@ class _VideoPageState extends State<VideoPage> {
     } catch (e) {
       print('Error updating like count: $e');
     }
+  } else {
+    // ✅ Display snackbar
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text("Veuillez vous connecter pour pouvoir liker."),
+        backgroundColor: green,
+        action: SnackBarAction(
+          label: "Se connecter",
+          textColor: Colors.white,
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed("/login");
+          },
+        ),
+      ),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +205,7 @@ class _VideoPageState extends State<VideoPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(Icons.arrow_back,color: Colors.white,size: 40,),
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 40),
             ),
           ),
           Positioned(
